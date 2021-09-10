@@ -74,11 +74,30 @@ cs('.pizzaInfo--size').forEach((size,sizeIndex) =>{
 });
 c('.pizzaInfo--addButton').addEventListener('click',()=>{
   let size = parseInt(c('.pizzaInfo--size.selected').getAttribute('data-key')); 
-
-  cart.push({
-    id:pizzaJson[modalKey].id,
-    size,
-    qt:modalQt
-  });
+  let identifier =  pizzaJson[modalKey].id+'@'+size;
+  let key = cart.findIndex((item)=>item.identifier == identifier);
+  if (key > -1) {
+    cart[key].qt = modalQt;
+  }else {
+    cart.push({
+      identifier,
+      id:pizzaJson[modalKey].id,
+      size,
+      qt:modalQt
+    });
+  }
+  updateModal();
   closeModal();
 });
+function updateModal() {
+  if (cart.length > 0) {
+    c('aside').classList.add('show');
+    let pizzaItem = pizzaJson.find((item)=>{
+      for (let i in cart) {
+        item.id == cart[i].id;
+      }
+    })
+  } else {
+    c('aside').classList.remove('show');
+  }
+}
